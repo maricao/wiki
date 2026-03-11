@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>調べものに使ってね！</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@400;700;800;900&family=Dela+Gothic+One&display=swap" rel="stylesheet">
+
+<style>
+/* ══════════════════════════════════════════
+   TOKENS
+══════════════════════════════════════════ */
+:root {
+  --navy:   #003775;
+  --yellow: #FCCA00;
+  --white:  #FFFFFF;
+  --cream:  #FFFBEF;
+  --ink:    #111827;
+  --muted:  #6B7280;
+  --card-radius: 16px;
+  --gap: clamp(16px, 3vw, 28px);
+}
+
+/* ══════════════════════════════════════════
+   RESET & BASE
+══════════════════════════════════════════ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'M PLUS Rounded 1c', 'Rounded Mplus 1c', sans-serif;
+  background: var(--cream);
+  color: var(--ink);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+a { color: inherit; text-decoration: none; }
+
+/* ══════════════════════════════════════════
+   HEADER / HERO
+══════════════════════════════════════════ */
+header {
+  background: var(--navy);
+  position: relative;
+  overflow: hidden;
+  padding: clamp(32px, 6vw, 64px) clamp(20px, 5vw, 60px) clamp(28px, 5vw, 56px);
+}
+
+/* 幾何学的背景装飾 */
+header::before {
+  content: '';
+  position: absolute;
+  top: -60px; right: -60px;
+  width: 320px; height: 320px;
+  border-radius: 50%;
+  background: rgba(252,202,0,0.12);
+  pointer-events: none;
+}
+
+header::after {
+  content: '';
+  position: absolute;
+  bottom: -80px; left: 30%;
+  width: 240px; height: 240px;
+  border-radius: 50%;
+  background: rgba(252,202,0,0.07);
+  pointer-events: none;
+}
+
+.header-inner {
+  position: relative;
+  z-index: 1;
+  max-width: 860px;
+  margin: 0 auto;
+}
+
+.site-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--yellow);
+  color: var(--navy);
+  font-size: clamp(10px, 1.5vw, 13px);
+  font-weight: 900;
+  letter-spacing: 0.12em;
+  padding: 5px 14px;
+  border-radius: 999px;
+  margin-bottom: 18px;
+}
+
+.site-label::before {
+  content: '★';
+  font-size: 10px;
+}
+
+h1 {
+  font-family: 'M PLUS Rounded 1c', sans-serif;
+  font-weight: 700;
+  font-size: clamp(28px, 7vw, 60px);
+  line-height: 1.1;
+  color: var(--white);
+  letter-spacing: -0.01em;
+  margin-bottom: 16px;
+}
+
+h1 em {
+  font-style: normal;
+  color: var(--yellow);
+  display: inline-block;
+  position: relative;
+}
+
+.header-desc {
+  font-size: clamp(13px, 2vw, 16px);
+  color: rgba(255,255,255,0.72);
+  font-weight: 400;
+  line-height: 1.7;
+  max-width: 480px;
+}
+
+/* ══════════════════════════════════════════
+   YELLOW ACCENT BAR
+══════════════════════════════════════════ */
+.accent-bar {
+  height: 6px;
+  background: var(--yellow);
+}
+
+/* ══════════════════════════════════════════
+   MAIN CONTENT
+══════════════════════════════════════════ */
+main {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: clamp(32px, 5vw, 56px) clamp(20px, 5vw, 40px) 80px;
+}
+
+.section-label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.2em;
+  color: var(--navy);
+  text-transform: uppercase;
+  margin-bottom: 20px;
+}
+
+.section-label::after {
+  content: '';
+  flex: 1;
+  height: 2px;
+  background: var(--navy);
+  opacity: 0.15;
+  border-radius: 1px;
+}
+
+/* ══════════════════════════════════════════
+   CARD GRID
+══════════════════════════════════════════ */
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 260px), 1fr));
+  gap: var(--gap);
+}
+
+/* ──── 個別カード ──── */
+.card {
+  background: var(--white);
+  border-radius: var(--card-radius);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  box-shadow:
+    0 1px 3px rgba(0,55,117,0.06),
+    0 4px 16px rgba(0,55,117,0.08);
+  transition:
+    transform 0.22s cubic-bezier(0.34,1.56,0.64,1),
+    box-shadow 0.22s ease;
+  position: relative;
+}
+
+.card:hover {
+  transform: translateY(-5px) scale(1.01);
+  box-shadow:
+    0 2px 8px rgba(0,55,117,0.08),
+    0 16px 40px rgba(0,55,117,0.16);
+}
+
+.card:hover .card-arrow { transform: translateX(4px); }
+
+/* カラーバンド（上部） */
+.card-band {
+  height: 6px;
+  background: var(--navy);
+  flex-shrink: 0;
+}
+
+/* カード本体 */
+.card-body {
+  padding: 20px 22px 18px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.card-icon {
+  font-size: 36px;
+  line-height: 1;
+  margin-bottom: 14px;
+  display: block;
+}
+
+.card-tag {
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.18em;
+  color: var(--muted);
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+
+.card-title {
+  font-size: 18px;
+  font-weight: 900;
+  color: var(--navy);
+  line-height: 1.3;
+  margin-bottom: 10px;
+}
+
+.card-desc {
+  font-size: 13px;
+  font-weight: 400;
+  color: var(--muted);
+  line-height: 1.7;
+  flex: 1;
+  margin-bottom: 18px;
+}
+
+/* カードフッター（CTA） */
+.card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 22px;
+  border-top: 1px solid rgba(0,55,117,0.07);
+  background: rgba(0,55,117,0.02);
+}
+
+.card-cta {
+  font-size: 12px;
+  font-weight: 800;
+  color: var(--navy);
+  letter-spacing: 0.05em;
+}
+
+.card-arrow {
+  width: 28px; height: 28px;
+  background: var(--navy);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--white);
+  font-size: 13px;
+  transition: transform 0.2s ease;
+  flex-shrink: 0;
+}
+
+/* ── アクセントカード（最初のカードを目立たせる）── */
+.card.featured .card-band  { background: var(--yellow); height: 8px; }
+.card.featured .card-title { color: var(--navy); }
+.card.featured .card-arrow { background: var(--yellow); color: var(--navy); }
+.card.featured .card-footer { background: rgba(252,202,0,0.05); border-color: rgba(252,202,0,0.2); }
+
+/* ── COMING SOON カード ── */
+.card.coming-soon {
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+.card.coming-soon .card-band { background: #ccc; }
+.card.coming-soon .card-arrow { background: #ccc; }
+
+.card-badge {
+  display: inline-block;
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: var(--yellow);
+  color: var(--navy);
+  margin-left: 8px;
+  vertical-align: middle;
+}
+
+/* ══════════════════════════════════════════
+   FOOTER
+══════════════════════════════════════════ */
+footer {
+  background: var(--navy);
+  color: rgba(255,255,255,0.5);
+  text-align: center;
+  font-size: 12px;
+  padding: 24px 20px;
+  letter-spacing: 0.05em;
+}
+
+/* ══════════════════════════════════════════
+   ANIMATIONS（ページロード）
+══════════════════════════════════════════ */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.header-inner { animation: fadeUp 0.5s ease both; }
+
+.card {
+  animation: fadeUp 0.45s ease both;
+}
+.card:nth-child(1) { animation-delay: 0.10s; }
+.card:nth-child(2) { animation-delay: 0.17s; }
+.card:nth-child(3) { animation-delay: 0.24s; }
+.card:nth-child(4) { animation-delay: 0.31s; }
+.card:nth-child(5) { animation-delay: 0.38s; }
+.card:nth-child(6) { animation-delay: 0.45s; }
+
+/* ══════════════════════════════════════════
+   RESPONSIVE
+══════════════════════════════════════════ */
+@media (max-width: 500px) {
+  .card-grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<!-- ══════ HEADER ══════ -->
+<header>
+  <div class="header-inner">
+    <div class="site-label">家族向け</div>
+    <h1>調べものに<br><em>使ってね！</em></h1>
+    <p class="header-desc">すぐ調べられるようにしたい項目が他にあったらまた言ってね〜。</p>
+  </div>
+</header>
+
+<div class="accent-bar"></div>
+
+<!-- ══════ MAIN ══════ -->
+<main>
+
+  <div class="section-label">コンテンツ一覧</div>
+
+  <div class="card-grid">
+
+    <!-- ══ カード 1：Scratchブロック辞典（featured） ══ -->
+    <a href="scratch_blocks.html" class="card featured">
+      <div class="card-band"></div>
+      <div class="card-body">
+        <span class="card-icon">🐱</span>
+        <div class="card-tag">プログラミング</div>
+        <div class="card-title">Scratchブロック じてん</div>
+        <div class="card-desc">
+          Scratch 3.0 の全ブロックを カテゴリ別にまとめたよ。
+          プログラムするとき 辞書みたいに使ってね！
+          キーワード検索もできるよ。
+        </div>
+      </div>
+      <div class="card-footer">
+        <span class="card-cta">じてんをひらく</span>
+        <span class="card-arrow">→</span>
+      </div>
+    </a>
+
+    <!-- ══ カード 2：Coming Soon 例 ══ -->
+    <div class="card coming-soon">
+      <div class="card-band"></div>
+      <div class="card-body">
+        <span class="card-icon">📐</span>
+        <div class="card-tag">さんすう・すうがく</div>
+        <div class="card-title">
+          公式・定理 まとめ
+          <span class="card-badge">まもなく</span>
+        </div>
+        <div class="card-desc">
+          よく使う公式や 定理を まとめたページ。
+          もうすぐ追加されるよ！
+        </div>
+      </div>
+      <div class="card-footer">
+        <span class="card-cta">準備中…</span>
+        <span class="card-arrow">→</span>
+      </div>
+    </div>
+
+    <!-- ══ カード 3：Coming Soon 例 ══ -->
+    <div class="card coming-soon">
+      <div class="card-band"></div>
+      <div class="card-body">
+        <span class="card-icon">🌍</span>
+        <div class="card-tag">ちり・りか</div>
+        <div class="card-title">
+          都道府県マップ
+          <span class="card-badge">まもなく</span>
+        </div>
+        <div class="card-desc">
+          都道府県の場所や 特産物を まとめたページ。
+          もうすぐ追加されるよ！
+        </div>
+      </div>
+      <div class="card-footer">
+        <span class="card-cta">準備中…</span>
+        <span class="card-arrow">→</span>
+      </div>
+    </div>
+
+  </div><!-- /.card-grid -->
+
+</main>
+
+<!-- ══════ FOOTER ══════ -->
+<footer>寿限無、寿限無、五劫のすり切れ、海砂利水魚の、水行末雲来末風来末、食う寝るところに住むところ、やぶら小路のぶら小路、パイポパイポパイポのシューリンガン、シューリンガンのグーリンダイ、グーリンダイのポンポコピーのポンポコナーの、長久命の長助</footer>
+
+<!--
+  ════════════════════════════════════════
+  【カードの追加方法】
+  上の .card-grid の中に 以下をコピーして追加してください。
+  featured クラスは 目立たせたいカード1枚につける。
+  coming-soon クラスは リンクなしのカード（準備中）。
+
+  <a href="リンク先.html" class="card">
+    <div class="card-band"></div>
+    <div class="card-body">
+      <span class="card-icon">絵文字</span>
+      <div class="card-tag">タグ名</div>
+      <div class="card-title">カードタイトル</div>
+      <div class="card-desc">説明文をここに書く。</div>
+    </div>
+    <div class="card-footer">
+      <span class="card-cta">ひらく</span>
+      <span class="card-arrow">→</span>
+    </div>
+  </a>
+  ════════════════════════════════════════
+-->
+
+</body>
+</html>
