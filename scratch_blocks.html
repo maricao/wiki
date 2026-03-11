@@ -1,0 +1,1174 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Scratchブロック じてん</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700;900&family=Fredoka+One&display=swap');
+
+  :root {
+    --motion:    #4C97FF;
+    --looks:     #9966FF;
+    --sound:     #CF63CF;
+    --events:    #FFAB19;
+    --control:   #FFAB19;
+    --sensing:   #5CB1D6;
+    --operators: #59C059;
+    --variables: #FF8C1A;
+    --myblocks:  #FF6680;
+    --bg:        #F0F4FF;
+    --surface:   #FFFFFF;
+    --text:      #1a1a2e;
+    --sidebar-w: 200px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Noto Sans JP', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    display: flex;
+    min-height: 100vh;
+  }
+
+  /* ===== SIDEBAR ===== */
+  nav {
+    position: fixed;
+    top: 0; left: 0;
+    width: var(--sidebar-w);
+    height: 100vh;
+    background: #1a1a2e;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    z-index: 100;
+  }
+
+  .nav-title {
+    font-family: 'Fredoka One', sans-serif;
+    font-size: 1.3rem;
+    color: #fff;
+    text-align: center;
+    padding: 20px 10px 10px;
+    letter-spacing: 1px;
+    line-height: 1.3;
+  }
+
+  .nav-title span { font-size: 0.8rem; display: block; color: #aaa; font-family: 'Noto Sans JP', sans-serif; font-weight: 400; }
+
+  nav a {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 16px;
+    color: #fff;
+    text-decoration: none;
+    font-size: 0.85rem;
+    font-weight: 700;
+    transition: background 0.2s;
+    border-left: 4px solid transparent;
+  }
+
+  nav a:hover { background: rgba(255,255,255,0.1); }
+
+  nav a .dot {
+    width: 14px; height: 14px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  /* ===== MAIN ===== */
+  main {
+    margin-left: var(--sidebar-w);
+    padding: 40px 30px;
+    flex: 1;
+    max-width: 1100px;
+  }
+
+  .page-hero {
+    text-align: center;
+    margin-bottom: 50px;
+    padding: 40px 20px;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    border-radius: 20px;
+    color: white;
+  }
+
+  .page-hero h1 {
+    font-family: 'Fredoka One', sans-serif;
+    font-size: 2.8rem;
+    letter-spacing: 2px;
+    margin-bottom: 8px;
+  }
+
+  .page-hero p { font-size: 1rem; opacity: 0.9; }
+
+  /* ===== CATEGORY SECTION ===== */
+  .category {
+    margin-bottom: 50px;
+    scroll-margin-top: 20px;
+  }
+
+  .cat-header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 20px;
+    padding: 16px 22px;
+    border-radius: 14px;
+    color: white;
+  }
+
+  .cat-header .cat-icon {
+    font-size: 2rem;
+  }
+
+  .cat-header h2 {
+    font-family: 'Fredoka One', sans-serif;
+    font-size: 1.8rem;
+    letter-spacing: 1px;
+  }
+
+  .cat-header .cat-en {
+    font-size: 0.85rem;
+    opacity: 0.85;
+    font-weight: 400;
+    margin-left: auto;
+  }
+
+  /* ===== BLOCK CARDS ===== */
+  .blocks-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 14px;
+  }
+
+  .block-card {
+    background: white;
+    border-radius: 12px;
+    padding: 16px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    border-left: 6px solid;
+    transition: transform 0.15s, box-shadow 0.15s;
+    position: relative;
+  }
+
+  .block-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 18px rgba(0,0,0,0.12);
+  }
+
+  .block-name {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 7px 14px;
+    border-radius: 999px;
+    color: white;
+    font-weight: 700;
+    font-size: 0.88rem;
+    margin-bottom: 10px;
+    line-height: 1.4;
+    word-break: keep-all;
+  }
+
+  .block-name.hat {
+    border-radius: 999px 999px 999px 4px;
+  }
+
+  .block-name.reporter {
+    border-radius: 999px;
+    color: white;
+  }
+
+  .block-name.bool {
+    border-radius: 6px;
+    clip-path: polygon(12px 0%, calc(100% - 12px) 0%, 100% 50%, calc(100% - 12px) 100%, 12px 100%, 0% 50%);
+    padding: 7px 24px;
+  }
+
+  .block-desc {
+    font-size: 0.82rem;
+    color: #444;
+    line-height: 1.6;
+    margin-bottom: 8px;
+  }
+
+  .block-example {
+    background: #f7f9ff;
+    border-radius: 8px;
+    padding: 8px 12px;
+    font-size: 0.78rem;
+    color: #555;
+    line-height: 1.5;
+    border-left: 3px solid #e0e0e0;
+  }
+
+  .block-example::before {
+    content: "💡 つかいかた：";
+    font-weight: 700;
+    color: #888;
+    display: block;
+    margin-bottom: 2px;
+    font-size: 0.75rem;
+  }
+
+  /* Category colors */
+  .motion    .block-card { border-color: var(--motion); }
+  .looks     .block-card { border-color: var(--looks); }
+  .sound     .block-card { border-color: var(--sound); }
+  .events    .block-card { border-color: var(--events); }
+  .control   .block-card { border-color: #FF8C1A; }
+  .sensing   .block-card { border-color: var(--sensing); }
+  .operators .block-card { border-color: var(--operators); }
+  .variables .block-card { border-color: var(--variables); }
+  .myblocks  .block-card { border-color: var(--myblocks); }
+
+  .motion    .cat-header { background: var(--motion); }
+  .looks     .cat-header { background: var(--looks); }
+  .sound     .cat-header { background: var(--sound); }
+  .events    .cat-header { background: var(--events); }
+  .control   .cat-header { background: #FF8C1A; }
+  .sensing   .cat-header { background: var(--sensing); }
+  .operators .cat-header { background: var(--operators); }
+  .variables .cat-header { background: var(--variables); }
+  .myblocks  .cat-header { background: var(--myblocks); }
+
+  .motion    .block-name { background: var(--motion); }
+  .looks     .block-name { background: var(--looks); }
+  .sound     .block-name { background: var(--sound); }
+  .events    .block-name { background: var(--events); }
+  .control   .block-name { background: #FF8C1A; }
+  .sensing   .block-name { background: var(--sensing); }
+  .operators .block-name { background: var(--operators); }
+  .variables .block-name { background: var(--variables); }
+  .myblocks  .block-name { background: var(--myblocks); }
+
+  footer {
+    text-align: center;
+    padding: 40px;
+    font-size: 0.8rem;
+    color: #aaa;
+    margin-left: var(--sidebar-w);
+  }
+
+  /* ===== SEARCH ===== */
+  .search-wrap {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    margin-bottom: 24px;
+  }
+
+  .search-box {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: rgba(255,255,255,0.95);
+    backdrop-filter: blur(10px);
+    border-radius: 999px;
+    padding: 12px 20px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.12);
+    border: 2px solid transparent;
+    transition: border-color 0.2s;
+  }
+
+  .search-box:focus-within {
+    border-color: #667eea;
+  }
+
+  .search-icon {
+    font-size: 1.1rem;
+    color: #aaa;
+    flex-shrink: 0;
+  }
+
+  .search-input {
+    flex: 1;
+    border: none;
+    outline: none;
+    font-size: 1rem;
+    font-family: 'Noto Sans JP', sans-serif;
+    color: var(--text);
+    background: transparent;
+  }
+
+  .search-input::placeholder { color: #bbb; }
+
+  .search-count {
+    font-size: 0.8rem;
+    color: #aaa;
+    white-space: nowrap;
+    font-weight: 700;
+  }
+
+  .search-clear {
+    background: #eee;
+    border: none;
+    border-radius: 50%;
+    width: 22px; height: 22px;
+    font-size: 0.75rem;
+    cursor: pointer;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    color: #888;
+    flex-shrink: 0;
+  }
+
+  .search-clear.visible { display: flex; }
+  .search-clear:hover { background: #ddd; }
+
+  /* search highlight */
+  mark {
+    background: #FFF176;
+    color: inherit;
+    border-radius: 2px;
+    padding: 0 1px;
+  }
+
+  /* hidden card/section when searching */
+  .block-card.hidden  { display: none; }
+  .category.no-match  { display: none; }
+
+  /* no results message */
+  .no-results {
+    display: none;
+    text-align: center;
+    padding: 60px 20px;
+    color: #aaa;
+    font-size: 1.2rem;
+  }
+  .no-results.visible { display: block; }
+
+  @media (max-width: 700px) {
+    nav { display: none; }
+    main { margin-left: 0; padding: 20px 16px; }
+    footer { margin-left: 0; }
+    .blocks-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ===== SIDEBAR NAV ===== -->
+<nav>
+  <div class="nav-title">🐱 Scratch<span>ブロック じてん</span></div>
+  <a href="#motion">    <span class="dot" style="background:#4C97FF"></span> 動き</a>
+  <a href="#looks">     <span class="dot" style="background:#9966FF"></span> 見た目</a>
+  <a href="#sound">     <span class="dot" style="background:#CF63CF"></span> 音</a>
+  <a href="#events">    <span class="dot" style="background:#FFAB19"></span> イベント</a>
+  <a href="#control">   <span class="dot" style="background:#FF8C1A"></span> 制御</a>
+  <a href="#sensing">   <span class="dot" style="background:#5CB1D6"></span> 調べる</a>
+  <a href="#operators"> <span class="dot" style="background:#59C059"></span> 演算</a>
+  <a href="#variables"> <span class="dot" style="background:#FF8C1A"></span> 変数</a>
+  <a href="#myblocks">  <span class="dot" style="background:#FF6680"></span> ブロック定義</a>
+</nav>
+
+<main>
+
+<div class="page-hero">
+  <h1>🐱 Scratchブロック じてん</h1>
+  <p>Scratch 3.0 の全ブロックを カテゴリごとに まとめたよ！</p>
+</div>
+
+<!-- ===== SEARCH BAR ===== -->
+<div class="search-wrap">
+  <div class="search-box">
+    <span class="search-icon">🔍</span>
+    <input class="search-input" id="searchInput" type="text"
+           placeholder="ブロック名や説明で検索… 例：「繰り返す」「乱数」「触れた」">
+    <span class="search-count" id="searchCount"></span>
+    <button class="search-clear" id="searchClear" title="クリア">✕</button>
+  </div>
+</div>
+<div class="no-results" id="noResults">😢 「<span id="noResultsWord"></span>」に 当てはまる ブロックは 見つからなかったよ。</div>
+
+<!-- ========== 動き ========== -->
+<section class="category motion" id="motion">
+  <div class="cat-header">
+    <span class="cat-icon">🏃</span>
+    <h2>動き</h2>
+    <span class="cat-en">Motion</span>
+  </div>
+  <div class="blocks-grid">
+
+    <div class="block-card">
+      <div class="block-name">〇 歩 動かす</div>
+      <div class="block-desc">スプライトを 向いている方向に 〇歩 すすめる。</div>
+      <div class="block-example">「10歩動かす」→ 右に10歩 あるく。</div>
+    </div>
+
+    <div class="block-card">
+      <div class="block-name">〇 度 回す ↻（右まわり）</div>
+      <div class="block-desc">スプライトを 時計まわりに 〇度 まわす。</div>
+      <div class="block-example">「15度回す」→ 右に少しむく。</div>
+    </div>
+
+    <div class="block-card">
+      <div class="block-name">〇 度 回す ↺（左まわり）</div>
+      <div class="block-desc">スプライトを 反時計まわりに 〇度 まわす。</div>
+      <div class="block-example">「15度回す」→ 左に少しむく。</div>
+    </div>
+
+    <div class="block-card">
+      <div class="block-name">〇 へ行く</div>
+      <div class="block-desc">マウスのポインターや ほかのスプライトの いる場所に すぐ移動する。</div>
+      <div class="block-example">「マウスのポインターへ行く」→ マウスの場所にワープ。</div>
+    </div>
+
+    <div class="block-card">
+      <div class="block-name">x座標を〇、y座標を〇 にする</div>
+      <div class="block-desc">スプライトを X・Y の位置に すぐ移動させる。</div>
+      <div class="block-example">「x:0 y:0」→ ステージのまんなかに移動。</div>
+    </div>
+
+    <div class="block-card">
+      <div class="block-name">〇 秒で 〇 へ行く</div>
+      <div class="block-desc">〇秒かけて ゆっくり 目的の場所まで 移動する。</div>
+      <div class="block-example">「1秒でマウスのポインターへ行く」→ 1秒でなめらかにうごく。</div>
+    </div>
+
+    <div class="block-card">
+      <div class="block-name">〇 秒で x:〇 y:〇 に行く</div>
+      <div class="block-desc">〇秒かけて X・Y の位置まで なめらかに 移動する。</div>
+      <div class="block-example">「2秒でx:100 y:50に行く」→ ゆっくりすべる。</div>
+    </div>
+
+    <div class="block-card">
+      <div class="block-name">〇 度に向ける</div>
+      <div class="block-desc">スプライトを 指定した向き（度）に 向かせる。</div>
+      <div class="block-example">「90度」→ 右むき。「-90度」→ 左むき。「0度」→ 上むき。</div>
+    </div>
+
+    <div class="block-card">
+      <div class="block-name">〇 へ向ける</div>
+      <div class="block-desc">マウスや ほかのスプライトの 方向に 向かせる。</div>
+      <div class="block-example">「マウスのポインターへ向ける」→ マウスの方をずっと向く。</div>
+    </div>
+
+    <div class="block-card">
+      <div class="block-name">x座標を 〇 ずつ変える</div>
+      <div class="block-desc">スプライトを 左右に 〇だけ 動かす。</div>
+      <div class="block-example">「10ずつ変える」→ 右に10うごく。マイナスなら左。</div>
+    </div>
+
+    <div class="block-card">
+      <div class="block-name">x座標を 〇 にする</div>
+      <div class="block-desc">スプライトの よこの位置を ぴったり 〇にする。</div>
+      <div class="block-example">「x:0にする」→ まんなかの高さに並べる。</div>
+    </div>
+
+    <div class="block-card">
+      <div class="block-name">y座標を 〇 ずつ変える</div>
+      <div class="block-desc">スプライトを 上下に 〇だけ 動かす。</div>
+      <div class="block-example">「10ずつ変える」→ 上に10うごく。マイナスなら下。</div>
+    </div>
+
+    <div class="block-card">
+      <div class="block-name">y座標を 〇 にする</div>
+      <div class="block-desc">スプライトの たての位置を ぴったり 〇にする。</div>
+      <div class="block-example">「y:0にする」→ まんなかの高さに揃える。</div>
+    </div>
+
+    <div class="block-card">
+      <div class="block-name">もし端に着いたら、跳ね返る</div>
+      <div class="block-desc">ステージのはしに ぶつかったら 向きを かえてはねかえる。</div>
+      <div class="block-example">「10歩動かす」+「端で跳ね返る」でバウンドしつづける。</div>
+    </div>
+
+    <div class="block-card">
+      <div class="block-name">回転方法を 〇 にする</div>
+      <div class="block-desc">スプライトの 回り方（左右のみ・全方向・固定）を 設定する。</div>
+      <div class="block-example">「左右のみ」→ ひっくりかえらず左右だけむく。</div>
+    </div>
+
+    <div class="block-card">
+      <div class="block-name">x座標 / y座標 / 向き（値ブロック）</div>
+      <div class="block-desc">今のスプライトの x座標・y座標・向きの 数字を 取り出す。</div>
+      <div class="block-example">変数に入れたり 条件で使ったりできる。</div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ========== 見た目 ========== -->
+<section class="category looks" id="looks">
+  <div class="cat-header">
+    <span class="cat-icon">👁</span>
+    <h2>見た目</h2>
+    <span class="cat-en">Looks</span>
+  </div>
+  <div class="blocks-grid">
+
+    <div class="block-card">
+      <div class="block-name">〇 と言う</div>
+      <div class="block-desc">スプライトの 上に ふきだしで 言葉を ずっと表示する。</div>
+      <div class="block-example">「こんにちは！と言う」→ 会話ゲームで使う。</div>
+    </div>
+
+    <div class="block-card">
+      <div class="block-name">〇 秒 〇 と言う</div>
+      <div class="block-desc">ふきだしを 〇秒だけ 表示して 消える。</div>
+      <div class="block-example">「2秒 こんにちは！と言う」→ 2秒後に消える。</div>
+    </div>
+
+    <div class="block-card">
+      <div class="block-name">〇 と思う</div>
+      <div class="block-desc">雲形の ふきだしで 言葉を ずっと表示する。</div>
+      <div class="block-example">考えているようすを 表すときに使う。</div>
+    </div>
+
+    <div class="block-card">
+      <div class="block-name">〇 秒 〇 と思う</div>
+      <div class="block-desc">雲形ふきだしを 〇秒だけ 表示する。</div>
+      <div class="block-example">「1秒 うーん…と思う」→ 考えポーズ。</div>
+    </div>
+
+    <div class="block-card">
+      <div class="block-name">コスチュームを 〇 にする</div>
+      <div class="block-desc">スプライトの 見た目（コスチューム）を 指定のものに 切り替える。</div>
+      <div class="block-example">歩くアニメに使う。コスチューム1→2→1… と切り替える。</div>
+    </div>
+
+    <div class="block-card">
+      <div class="block-name">次のコスチュームにする</div>
+      <div class="block-desc">コスチュームを 一つ次に 切り替える。最後の次は 最初に戻る。</div>
+      <div class="block-example">ループの中で使うと アニメーションになる。</div>
+    </div>
+
+    <div class="block-card">
+      <div class="block-name">背景を 〇 にする</div>
+      <div class="block-desc">ステージの 背景を 指定のものに 切り替える。</div>
+      <div class="block-example">「つぎのステージへ行く」場面切り替えに使う。</div>
+    </div>
+
+    <div class="block-card">
+      <div class="block-name">次の背景にする</div>
+      <div class="block-desc">背景を 一つ次に 切り替える。</div>
+      <div class="block-example">スライドショーみたいに 背景を順番に変えられる。</div>
+    </div>
+
+    <div class="block-card">
+      <div class="block-name">大きさを 〇% ずつ変える</div>
+      <div class="block-desc">スプライトを 〇%分 大きくしたり 小さくしたりする。</div>
+      <div class="block-example">「-10%ずつ変える」を 繰り返すと だんだん小さくなる。</div>
+    </div>
+
+    <div class="block-card">
+      <div class="block-name">大きさを 〇% にする</div>
+      <div class="block-desc">スプライトの 大きさを 〇%に する。（100%がもとのサイズ）</div>
+      <div class="block-example">「50%にする」→ 半分の大きさ。「200%」→ 2倍。</div>
+    </div>
+
+    <div class="block-card">
+      <div class="block-name">〇 の効果を 〇 ずつ変える</div>
+      <div class="block-desc">色・魚眼・渦・ピクセル化・モザイク・明るさ・幽霊の効果を 変える。</div>
+      <div class="block-example">「色の効果を25ずつ変える」→ 虹色に変わる。</div>
+    </div>
+
+    <div class="block-card">
+      <div class="block-name">〇 の効果を 〇 にする</div>
+      <div class="block-desc">グラフィック効果を ぴったり 〇に 設定する。</div>
+      <div class="block-example">「幽霊の効果を50にする」→ 半透明になる。</div>
+    </div>
+
+    <div class="block-card">
+      <div class="block-name">図形効果を全部なくす</div>
+      <div class="block-desc">かかっている グラフィック効果を 全部 元に戻す。</div>
+      <div class="block-example">エフェクトをリセットしたいときに 使う。</div>
+    </div>
+
+    <div class="block-card">
+      <div class="block-name">表示する / 隠す</div>
+      <div class="block-desc">スプライトを 見えるように したり、 見えなく したりする。</div>
+      <div class="block-example">ゲームで「隠す」→クリア後に「表示する」など。</div>
+    </div>
+
+    <div class="block-card">
+      <div class="block-name">前に出る / 後ろに〇層下げる</div>
+      <div class="block-desc">スプライトの 重なり順（前後）を 変える。</div>
+      <div class="block-example">キャラを 背景より 前にする。</div>
+    </div>
+
+    <div class="block-card">
+      <div class="block-name">コスチューム番号 / 名前 / 背景番号 / 名前 / 大きさ（値ブロック）</div>
+      <div class="block-desc">今の コスチューム・背景・大きさ の情報を 取り出す。</div>
+      <div class="block-example">条件分岐で「背景が〇のとき…」と使える。</div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ========== 音 ========== -->
+<section class="category sound" id="sound">
+  <div class="cat-header">
+    <span class="cat-icon">🎵</span>
+    <h2>音</h2>
+    <span class="cat-en">Sound</span>
+  </div>
+  <div class="blocks-grid">
+
+    <div class="block-card">
+      <div class="block-name">〇 の音を鳴らす</div>
+      <div class="block-desc">指定した 音を 鳴らしながら 次の処理に 進む。（鳴り終わらなくていい）</div>
+      <div class="block-example">効果音など 重ねて鳴らしたいときに。</div>
+    </div>
+
+    <div class="block-card">
+      <div class="block-name">〇 の音を最後まで鳴らす</div>
+      <div class="block-desc">指定した 音が 鳴り終わるまで 待ってから 次に進む。</div>
+      <div class="block-example">BGMや セリフが終わるまで 待つ場合に。</div>
+    </div>
+
+    <div class="block-card">
+      <div class="block-name">全ての音を止める</div>
+      <div class="block-desc">今 鳴っている すべての音を 止める。</div>
+      <div class="block-example">ゲームオーバー時に BGMを止めるなど。</div>
+    </div>
+
+    <div class="block-card">
+      <div class="block-name">音量を 〇 ずつ変える</div>
+      <div class="block-desc">音量を 〇%分 上げたり 下げたりする。</div>
+      <div class="block-example">「-10ずつ変える」→ だんだん小さくなる。</div>
+    </div>
+
+    <div class="block-card">
+      <div class="block-name">音量を 〇% にする</div>
+      <div class="block-desc">音量を ぴったり 〇%に 設定する。（0〜100）</div>
+      <div class="block-example">「50%にする」→ 半分の音量。</div>
+    </div>
+
+    <div class="block-card">
+      <div class="block-name">音量（値ブロック）</div>
+      <div class="block-desc">今の 音量の 数値を 取り出す。</div>
+      <div class="block-example">条件で「音量が50より小さかったら…」と使える。</div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ========== イベント ========== -->
+<section class="category events" id="events">
+  <div class="cat-header">
+    <span class="cat-icon">🚩</span>
+    <h2>イベント</h2>
+    <span class="cat-en">Events</span>
+  </div>
+  <div class="blocks-grid">
+
+    <div class="block-card">
+      <div class="block-name hat">旗が押されたとき</div>
+      <div class="block-desc">緑の旗ボタンを 押すと 動き始める。プログラムの スタート地点。</div>
+      <div class="block-example">全てのプログラムは ここから始まる。</div>
+    </div>
+
+    <div class="block-card">
+      <div class="block-name hat">〇 キーが押されたとき</div>
+      <div class="block-desc">指定した キーを 押したとき 動き始める。</div>
+      <div class="block-example">「スペースキー」→ ジャンプするなど。</div>
+    </div>
+
+    <div class="block-card">
+      <div class="block-name hat">このスプライトが押されたとき</div>
+      <div class="block-desc">スプライトを クリックしたとき 動き始める。</div>
+      <div class="block-example">ボタンキャラを クリックしたら 何かが起きる。</div>
+    </div>
+
+    <div class="block-card">
+      <div class="block-name hat">背景が 〇 になったとき</div>
+      <div class="block-desc">背景が 指定のものに 切り替わったとき 動き始める。</div>
+      <div class="block-example">ステージが変わったら BGMを変えるなど。</div>
+    </div>
+
+    <div class="block-card">
+      <div class="block-name hat">〇 が 〇 より大きくなったとき</div>
+      <div class="block-desc">音量や タイマーが ある数値を 超えたとき 動き始める。</div>
+      <div class="block-example">「タイマーが10より大きくなったとき」→ 時間切れ。</div>
+    </div>
+
+    <div class="block-card">
+      <div class="block-name hat">〇 を受け取ったとき</div>
+      <div class="block-desc">「〇を送る」で 送られてきた合図を 受け取ったとき 動き始める。</div>
+      <div class="block-example">別のスプライトから 「ゲームスタート」を 受け取って動く。</div>
+    </div>
+
+    <div class="block-card">
+      <div class="block-name">〇 を送る</div>
+      <div class="block-desc">すべてのスプライトに 合図（メッセージ）を 送る。</div>
+      <div class="block-example">「ゲームスタートを送る」→ 他のキャラが 動き出す。</div>
+    </div>
+
+    <div class="block-card">
+      <div class="block-name">〇 を送って待つ</div>
+      <div class="block-desc">合図を送って、 受け取ったスプライトが 全部 動き終わるまで 待つ。</div>
+      <div class="block-example">順番に処理したいときに。</div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ========== 制御 ========== -->
+<section class="category control" id="control">
+  <div class="cat-header">
+    <span class="cat-icon">🔄</span>
+    <h2>制御</h2>
+    <span class="cat-en">Control</span>
+  </div>
+  <div class="blocks-grid">
+
+    <div class="block-card">
+      <div class="block-name">〇 秒待つ</div>
+      <div class="block-desc">〇秒だけ 何もしないで 待ってから 次に進む。</div>
+      <div class="block-example">「1秒待つ」→ 1秒後に次のブロックへ。</div>
+    </div>
+
+    <div class="block-card">
+      <div class="block-name">〇 回繰り返す</div>
+      <div class="block-desc">中に入れたブロックを 〇回 くりかえす。</div>
+      <div class="block-example">「10回繰り返す：10歩動かす」→ 100歩すすむ。</div>
+    </div>
+
+    <div class="block-card">
+      <div class="block-name">ずっと</div>
+      <div class="block-desc">中に入れたブロックを 止まるまで ずーっとくりかえす。</div>
+      <div class="block-example">キャラを 常に動かし続ける ゲームの基本。</div>
+    </div>
+
+    <div class="block-card">
+      <div class="block-name">もし 〇 なら</div>
+      <div class="block-desc">条件が 当てはまるときだけ 中のブロックを 実行する。</div>
+      <div class="block-example">「スペースキーが押されたなら：ジャンプする」</div>
+    </div>
+
+    <div class="block-card">
+      <div class="block-name">もし 〇 なら ／ でなければ</div>
+      <div class="block-desc">条件が当てはまる場合と そうでない場合で 別々の 動きをさせる。</div>
+      <div class="block-example">「当たったなら：ゲームオーバー」「でなければ：つづける」</div>
+    </div>
+
+    <div class="block-card">
+      <div class="block-name">〇 まで待つ</div>
+      <div class="block-desc">条件が 当てはまるまで ずっと待って、 当てはまったら 次に進む。</div>
+      <div class="block-example">「スペースキーが押されるまで待つ」→ 押したら先へ。</div>
+    </div>
+
+    <div class="block-card">
+      <div class="block-name">〇 まで繰り返す</div>
+      <div class="block-desc">条件が 当てはまるまで 中のブロックを くりかえす。</div>
+      <div class="block-example">「端に着くまで繰り返す：10歩動かす」</div>
+    </div>
+
+    <div class="block-card">
+      <div class="block-name">止める</div>
+      <div class="block-desc">「このスクリプト」「全部」「他のスクリプト」を 止める。</div>
+      <div class="block-example">「全部止める」→ ゲームオーバー演出後に使う。</div>
+    </div>
+
+    <div class="block-card">
+      <div class="block-name hat">分身として始まったとき</div>
+      <div class="block-desc">分身（クローン）が 作られたとき 動き始める。</div>
+      <div class="block-example">分身に 弾の動きを させる。</div>
+    </div>
+
+    <div class="block-card">
+      <div class="block-name">分身を作る</div>
+      <div class="block-desc">自分や ほかのスプライトの コピーを 作る。</div>
+      <div class="block-example">シューティングの弾や 降る雨を 大量に作るのに使う。</div>
+    </div>
+
+    <div class="block-card">
+      <div class="block-name">この分身を削除する</div>
+      <div class="block-desc">今動いている 分身を 消す。</div>
+      <div class="block-example">端に出たら 弾の分身を 消すなど。</div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ========== 調べる ========== -->
+<section class="category sensing" id="sensing">
+  <div class="cat-header">
+    <span class="cat-icon">🔍</span>
+    <h2>調べる</h2>
+    <span class="cat-en">Sensing</span>
+  </div>
+  <div class="blocks-grid">
+
+    <div class="block-card">
+      <div class="block-name bool">〇 に触れた</div>
+      <div class="block-desc">マウスや 端や ほかのスプライトに 触れているか どうか調べる。（六角形）</div>
+      <div class="block-example">「敵に触れた：ゲームオーバー」などのあたり判定に。</div>
+    </div>
+
+    <div class="block-card">
+      <div class="block-name bool">〇 色に触れた</div>
+      <div class="block-desc">指定した色に 触れているか どうか調べる。</div>
+      <div class="block-example">地面（緑色）に 触れたら 着地、など。</div>
+    </div>
+
+    <div class="block-card">
+      <div class="block-name bool">〇 色が 〇 色に触れた</div>
+      <div class="block-desc">あるスプライトの 色が 別の色に 触れているか 調べる。</div>
+      <div class="block-example">精密なあたり判定ができる。</div>
+    </div>
+
+    <div class="block-card">
+      <div class="block-name">〇 までの距離</div>
+      <div class="block-desc">マウスや ほかのスプライトまでの 距離（数字）を 取り出す。</div>
+      <div class="block-example">「100より近かったら…」で 敵が近づいたと分かる。</div>
+    </div>
+
+    <div class="block-card">
+      <div class="block-name">〇 と聞いて待つ</div>
+      <div class="block-desc">メッセージを 表示して、 ユーザーが 入力するのを 待つ。</div>
+      <div class="block-example">「なまえは？と聞いて待つ」→ 名前を入力できる。</div>
+    </div>
+
+    <div class="block-card">
+      <div class="block-name">答え</div>
+      <div class="block-desc">「聞いて待つ」で ユーザーが 入力した 内容を 取り出す。</div>
+      <div class="block-example">「〇と言う」に「答え」を入れると 名前を呼べる。</div>
+    </div>
+
+    <div class="block-card">
+      <div class="block-name bool">〇 キーが押された</div>
+      <div class="block-desc">指定した キーが 押されているか どうか調べる。（六角形）</div>
+      <div class="block-example">「スペースキーが押された：ジャンプする」</div>
+    </div>
+
+    <div class="block-card">
+      <div class="block-name bool">マウスが押された</div>
+      <div class="block-desc">マウスのボタンが 押されているか どうか調べる。</div>
+      <div class="block-example">クリックしている間だけ 弾が出る、など。</div>
+    </div>
+
+    <div class="block-card">
+      <div class="block-name">マウスのx座標 / y座標</div>
+      <div class="block-desc">今のマウスの X・Y の位置（数字）を 取り出す。</div>
+      <div class="block-example">スプライトを マウスと同じ高さに 動かすなど。</div>
+    </div>
+
+    <div class="block-card">
+      <div class="block-name">タイマー</div>
+      <div class="block-desc">プログラムが 始まってからの 時間（秒数）を 取り出す。</div>
+      <div class="block-example">「タイマーが30より大きいとき：タイムアップ」</div>
+    </div>
+
+    <div class="block-card">
+      <div class="block-name">タイマーをリセット</div>
+      <div class="block-desc">タイマーを ゼロに 戻す。</div>
+      <div class="block-example">ゲームスタート時に リセットして使う。</div>
+    </div>
+
+    <div class="block-card">
+      <div class="block-name">〇 の 〇（スプライト情報）</div>
+      <div class="block-desc">ほかのスプライトの x座標・y座標・向き・コスチューム・大きさ・音量を 調べる。</div>
+      <div class="block-example">「敵のx座標」を 取り出して 追いかけさせる。</div>
+    </div>
+
+    <div class="block-card">
+      <div class="block-name">現在の 〇（日時情報）</div>
+      <div class="block-desc">今の 年・月・日・曜日・時・分・秒を 取り出す。</div>
+      <div class="block-example">今日が何月かによって 季節の演出を変える。</div>
+    </div>
+
+    <div class="block-card">
+      <div class="block-name">2000年からの経過時間</div>
+      <div class="block-desc">2000年1月1日から 今までの 日数を 取り出す。</div>
+      <div class="block-example">ランダムなシードや 特定の計算に 使われる。</div>
+    </div>
+
+    <div class="block-card">
+      <div class="block-name">ユーザー名</div>
+      <div class="block-desc">Scratchに ログインしている ユーザー名を 取り出す。</div>
+      <div class="block-example">「〇さん こんにちは！」と 呼びかけられる。</div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ========== 演算 ========== -->
+<section class="category operators" id="operators">
+  <div class="cat-header">
+    <span class="cat-icon">➕</span>
+    <h2>演算</h2>
+    <span class="cat-en">Operators</span>
+  </div>
+  <div class="blocks-grid">
+
+    <div class="block-card">
+      <div class="block-name">〇 ＋ 〇 / 〇 ー 〇 / 〇 × 〇 / 〇 ÷ 〇</div>
+      <div class="block-desc">足し算・引き算・かけ算・わり算を する。</div>
+      <div class="block-example">「スコア ＋ 10」→ 10点加算した 数を取り出す。</div>
+    </div>
+
+    <div class="block-card">
+      <div class="block-name">〇 から 〇 までの乱数</div>
+      <div class="block-desc">指定した 範囲の中から バラバラな 数字を 一つ 取り出す。</div>
+      <div class="block-example">「1から6の乱数」→ サイコロ。</div>
+    </div>
+
+    <div class="block-card">
+      <div class="block-name bool">〇 ＞ 〇 / 〇 ＜ 〇 / 〇 ＝ 〇</div>
+      <div class="block-desc">大きい・小さい・等しいかどうか 調べる。（六角形）</div>
+      <div class="block-example">「スコア ＞ 100：クリア！」などの条件に使う。</div>
+    </div>
+
+    <div class="block-card">
+      <div class="block-name bool">〇 かつ 〇</div>
+      <div class="block-desc">ふたつの条件が 両方 当てはまるとき だけ 真になる。（AND）</div>
+      <div class="block-example">「右キーかつ 速度＜10」→ 両方のとき加速。</div>
+    </div>
+
+    <div class="block-card">
+      <div class="block-name bool">〇 または 〇</div>
+      <div class="block-desc">ふたつの条件のうち どちらか 一つでも 当てはまれば 真になる。（OR）</div>
+      <div class="block-example">「AキーまたはBキーが押された」でどちらでも反応。</div>
+    </div>
+
+    <div class="block-card">
+      <div class="block-name bool">〇 でない</div>
+      <div class="block-desc">条件が 当てはまらないとき 真になる。（NOT）</div>
+      <div class="block-example">「敵に触れていない でない」→ 触れていないとき動く。</div>
+    </div>
+
+    <div class="block-card">
+      <div class="block-name">〇 と 〇 をつなげる</div>
+      <div class="block-desc">ふたつの 文字や 数字を つなげて 一つの 文字にする。</div>
+      <div class="block-example">「こんにちは と 名前 をつなげる」→「こんにちは花子」</div>
+    </div>
+
+    <div class="block-card">
+      <div class="block-name">〇 の 〇 文字目</div>
+      <div class="block-desc">文字の 何文字目かを 取り出す。</div>
+      <div class="block-example">「Scratch の 3文字目」→「r」</div>
+    </div>
+
+    <div class="block-card">
+      <div class="block-name">〇 の長さ</div>
+      <div class="block-desc">文字が 何文字 あるか 数える。</div>
+      <div class="block-example">「Scratch の長さ」→「7」</div>
+    </div>
+
+    <div class="block-card">
+      <div class="block-name bool">〇 に 〇 が含まれる</div>
+      <div class="block-desc">文字の中に 指定した文字が 含まれているか 調べる。</div>
+      <div class="block-example">「答えに「はい」が含まれる」→ 「はい！」でも反応。</div>
+    </div>
+
+    <div class="block-card">
+      <div class="block-name">〇 を 〇 で割った余り</div>
+      <div class="block-desc">わり算の あまりを 取り出す。（mod）</div>
+      <div class="block-example">「数 を 2 で割った余り が 0」→ 偶数かどうか調べる。</div>
+    </div>
+
+    <div class="block-card">
+      <div class="block-name">〇 を四捨五入する</div>
+      <div class="block-desc">小数点以下を 四捨五入して 整数にする。</div>
+      <div class="block-example">「3.7を四捨五入」→「4」</div>
+    </div>
+
+    <div class="block-card">
+      <div class="block-name">〇 の 〇（数学関数）</div>
+      <div class="block-desc">絶対値・切り捨て・切り上げ・平方根・sin・cos・tan などを 計算する。</div>
+      <div class="block-example">「sqrt（平方根）of 9」→「3」</div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ========== 変数 ========== -->
+<section class="category variables" id="variables">
+  <div class="cat-header">
+    <span class="cat-icon">📦</span>
+    <h2>変数</h2>
+    <span class="cat-en">Variables</span>
+  </div>
+  <div class="blocks-grid">
+
+    <div class="block-card">
+      <div class="block-name">〇 を 〇 にする</div>
+      <div class="block-desc">変数に 数字や 文字を 入れる（上書きする）。</div>
+      <div class="block-example">「スコアを 0 にする」→ スコアをリセット。</div>
+    </div>
+
+    <div class="block-card">
+      <div class="block-name">〇 を 〇 ずつ変える</div>
+      <div class="block-desc">変数の 値に 〇を 足す（マイナスなら引く）。</div>
+      <div class="block-example">「スコアを 10 ずつ変える」→ 10点加算。</div>
+    </div>
+
+    <div class="block-card">
+      <div class="block-name">〇 を表示する / 隠す</div>
+      <div class="block-desc">ステージに 変数の 数値を 表示したり 隠したり する。</div>
+      <div class="block-example">「スコアを表示する」→ 画面にスコアが出る。</div>
+    </div>
+
+    <div class="block-card">
+      <div class="block-name">〇 に 〇 を追加する（リスト）</div>
+      <div class="block-desc">リスト（箱の集まり）に 新しい 要素を 追加する。</div>
+      <div class="block-example">「なまえリストに 花子 を追加する」</div>
+    </div>
+
+    <div class="block-card">
+      <div class="block-name">〇 の 〇 番目を削除する（リスト）</div>
+      <div class="block-desc">リストの 指定した 番号の 要素を 消す。</div>
+      <div class="block-example">「なまえリストの 1番目を削除する」</div>
+    </div>
+
+    <div class="block-card">
+      <div class="block-name">〇 の全部を削除する（リスト）</div>
+      <div class="block-desc">リストの 中身を 全部 消す。</div>
+      <div class="block-example">ゲームリセット時に リストを空にする。</div>
+    </div>
+
+    <div class="block-card">
+      <div class="block-name">〇 の 〇 番目に 〇 を挿入する（リスト）</div>
+      <div class="block-desc">リストの 指定した 位置に 新しい 要素を 割り込ませる。</div>
+      <div class="block-example">「1番目に 太郎 を挿入」→ 先頭に追加。</div>
+    </div>
+
+    <div class="block-card">
+      <div class="block-name">〇 の 〇 番目を 〇 にする（リスト）</div>
+      <div class="block-desc">リストの 指定した 番号の 要素を 書き換える。</div>
+      <div class="block-example">「なまえリストの 2番目を 次郎 にする」</div>
+    </div>
+
+    <div class="block-card">
+      <div class="block-name">〇 の 〇 番目（リスト）</div>
+      <div class="block-desc">リストの 指定した 番号の 要素を 取り出す。</div>
+      <div class="block-example">「なまえリストの 1番目」→「太郎」</div>
+    </div>
+
+    <div class="block-card">
+      <div class="block-name bool">〇 に 〇 が含まれる（リスト）</div>
+      <div class="block-desc">リストの 中に 指定した 要素が あるか どうか調べる。</div>
+      <div class="block-example">「なまえリストに 花子 が含まれる」</div>
+    </div>
+
+    <div class="block-card">
+      <div class="block-name">〇 の項目数（リスト）</div>
+      <div class="block-desc">リストに 要素が 何個 入っているか 数える。</div>
+      <div class="block-example">「なまえリストの項目数」→「3」（3人ぶん）</div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ========== ブロック定義 ========== -->
+<section class="category myblocks" id="myblocks">
+  <div class="cat-header">
+    <span class="cat-icon">🧩</span>
+    <h2>ブロック定義</h2>
+    <span class="cat-en">My Blocks</span>
+  </div>
+  <div class="blocks-grid">
+
+    <div class="block-card">
+      <div class="block-name hat">ブロックを作る</div>
+      <div class="block-desc">自分だけの オリジナルブロックを 作れる。 長いプログラムを まとめて スッキリさせる。</div>
+      <div class="block-example">「ジャンプする」ブロックを自作して、何度も使いまわす。引数（パラメータ）をつけることもできる。</div>
+    </div>
+
+    <div class="block-card">
+      <div class="block-name">（自作ブロックの呼び出し）</div>
+      <div class="block-desc">作ったブロックを 呼び出して 使う。 何度でも 使えるので プログラムが 短くなる。</div>
+      <div class="block-example">「ジャンプする」「攻撃する」などを 何度も 呼び出せる。</div>
+    </div>
+
+  </div>
+</section>
+
+</main>
+
+<footer>Scratch 3.0 ブロックじてん ／ このファイルはオフラインで使えます</footer>
+
+<script>
+(function() {
+  const input    = document.getElementById('searchInput');
+  const clearBtn = document.getElementById('searchClear');
+  const countEl  = document.getElementById('searchCount');
+  const noRes    = document.getElementById('noResults');
+  const noResWord = document.getElementById('noResultsWord');
+
+  // 全カードと元のHTML（ハイライト前）を保存
+  const allCards = Array.from(document.querySelectorAll('.block-card'));
+  const originalHTML = allCards.map(c => c.innerHTML);
+
+  function escapeRegex(s) {
+    return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  }
+
+  function highlight(text, query) {
+    if (!query) return text;
+    const re = new RegExp('(' + escapeRegex(query) + ')', 'gi');
+    return text.replace(re, '<mark>$1</mark>');
+  }
+
+  function search(query) {
+    const q = query.trim();
+
+    // クリアボタンの表示制御
+    clearBtn.classList.toggle('visible', q.length > 0);
+
+    if (!q) {
+      // リセット：全カード・全カテゴリを表示、元のHTMLに戻す
+      allCards.forEach((card, i) => {
+        card.innerHTML = originalHTML[i];
+        card.classList.remove('hidden');
+      });
+      document.querySelectorAll('.category').forEach(s => s.classList.remove('no-match'));
+      countEl.textContent = '';
+      noRes.classList.remove('visible');
+      return;
+    }
+
+    let matchCount = 0;
+
+    allCards.forEach((card, i) => {
+      // 元のプレーンテキストで判定
+      const temp = document.createElement('div');
+      temp.innerHTML = originalHTML[i];
+      const plainText = temp.textContent || temp.innerText || '';
+
+      if (plainText.includes(q)) {
+        matchCount++;
+        card.classList.remove('hidden');
+        // ハイライト適用（innerHTML に対して）
+        card.innerHTML = highlight(originalHTML[i], q);
+      } else {
+        card.classList.add('hidden');
+      }
+    });
+
+    // カテゴリ内に見えるカードが0なら カテゴリごと隠す
+    document.querySelectorAll('.category').forEach(sec => {
+      const visible = sec.querySelectorAll('.block-card:not(.hidden)');
+      sec.classList.toggle('no-match', visible.length === 0);
+    });
+
+    countEl.textContent = matchCount > 0 ? `${matchCount} 件` : '';
+    noResWord.textContent = q;
+    noRes.classList.toggle('visible', matchCount === 0);
+  }
+
+  input.addEventListener('input', e => search(e.target.value));
+
+  clearBtn.addEventListener('click', () => {
+    input.value = '';
+    search('');
+    input.focus();
+  });
+
+  // ESCキーでクリア
+  input.addEventListener('keydown', e => {
+    if (e.key === 'Escape') {
+      input.value = '';
+      search('');
+    }
+  });
+})();
+</script>
